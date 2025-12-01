@@ -1,7 +1,7 @@
-import { ref, watch } from 'vue';
-import type { Message } from '@/types';
+import { ref, watch } from "vue";
+import type { Message } from "@/types";
 
-const STORAGE_KEY = 'ai-chatbot-messages';
+const STORAGE_KEY = "ai-chatbot-messages";
 
 const messages = ref<Message[]>([]);
 const isTyping = ref(false);
@@ -14,7 +14,7 @@ const loadMessages = () => {
       messages.value = JSON.parse(stored);
     }
   } catch (error) {
-    console.error('Error loading messages:', error);
+    console.error("Error loading messages:", error);
   }
 };
 
@@ -23,7 +23,7 @@ const saveMessages = () => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.value));
   } catch (error) {
-    console.error('Error saving messages:', error);
+    console.error("Error saving messages:", error);
   }
 };
 
@@ -36,7 +36,7 @@ export function useChat() {
     loadMessages();
   }
 
-  const addMessage = (text: string, sender: 'user' | 'ai') => {
+  const addMessage = (text: string, sender: "user" | "ai") => {
     const message: Message = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       text,
@@ -50,7 +50,7 @@ export function useChat() {
   const updateMessage = (id: string, updates: Partial<Message>) => {
     const index = messages.value.findIndex((m) => m.id === id);
     if (index !== -1) {
-      messages.value[index] = { ...messages.value[index], ...updates };
+      messages.value[index] = { ...messages.value[index], ...updates } as Message;
     }
   };
 
@@ -59,12 +59,12 @@ export function useChat() {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const simulateAIResponse = async (userMessage: string) => {
+  const simulateAIResponse = async () => {
     isTyping.value = true;
-    
+
     // Simulate AI thinking time
     await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
-    
+
     // Generate a simple response
     const responses = [
       "That's an interesting point! Let me help you with that.",
@@ -73,10 +73,10 @@ export function useChat() {
       "I've processed your message. Here's what I think...",
       "Thanks for sharing that. Let me provide some insights...",
     ];
-    
+
     const response = responses[Math.floor(Math.random() * responses.length)];
-    addMessage(response, 'ai');
-    
+    addMessage(response as string, "ai");
+
     isTyping.value = false;
   };
 
